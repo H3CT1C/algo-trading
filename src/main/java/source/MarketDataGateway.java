@@ -1,3 +1,5 @@
+package source;
+
 import com.binance.api.client.BinanceApiRestClient;
 import com.binance.api.client.BinanceApiWebSocketClient;
 import com.binance.api.client.BinanceApiClientFactory;
@@ -14,7 +16,7 @@ import java.util.TreeMap;
 
 // from https://github.com/joaopsilva/binance-java-api/blob/master/src/test/java/com/binance/api/examples/DepthCacheExample.java
 
-public class MarketData {
+public class MarketDataGateway {
     private static final String BIDS  = "BIDS";
     private static final String ASKS  = "ASKS";
 
@@ -22,7 +24,7 @@ public class MarketData {
 
     private Map<String, NavigableMap<BigDecimal, BigDecimal>> depthCache;
 
-    public MarketData(String symbol) {
+    public MarketDataGateway(String symbol) {
         initializeDepthCache(symbol);
         startDepthEventStreaming(symbol);
     }
@@ -60,7 +62,7 @@ public class MarketData {
 
         client.onDepthEvent(symbol.toLowerCase(), response -> {
             if (response.getFinalUpdateId() > lastUpdateId) {
-                System.out.println(response);
+//                System.out.println(response);
                 lastUpdateId = response.getFinalUpdateId();
                 updateOrderBook(getAsks(), response.getAsks());
                 updateOrderBook(getBids(), response.getBids());
@@ -120,11 +122,11 @@ public class MarketData {
      * Prints the cached order book / depth of a symbol as well as the best ask and bid price in the book.
      */
     private void printDepthCache() {
-        System.out.println(depthCache);
-        System.out.println("ASKS:");
-        getAsks().entrySet().forEach(entry -> System.out.println(toDepthCacheEntryString(entry)));
-        System.out.println("BIDS:");
-        getBids().entrySet().forEach(entry -> System.out.println(toDepthCacheEntryString(entry)));
+//        System.out.println(depthCache);
+//        System.out.println("ASKS:");
+//        getAsks().entrySet().forEach(entry -> System.out.println(toDepthCacheEntryString(entry)));
+//        System.out.println("BIDS:");
+//        getBids().entrySet().forEach(entry -> System.out.println(toDepthCacheEntryString(entry)));
         System.out.println("BEST ASK: " + toDepthCacheEntryString(getBestAsk()));
         System.out.println("BEST BID: " + toDepthCacheEntryString(getBestBid()));
     }
@@ -137,6 +139,6 @@ public class MarketData {
     }
 
     public static void main(String[] args) {
-        new MarketData("BTCUSDT");
+        new MarketDataGateway("bnbbtc");
     }
 }
