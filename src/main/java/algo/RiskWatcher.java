@@ -8,7 +8,7 @@ public class RiskWatcher implements EventListener {
     public void handleEvent(OrderBook orderBook) {
     }
 
-    @Override
-    public void handleEvent(ScheduleEvent timer) {
-    }
+//    @Override
+//    public void handleEvent(ScheduleEvent timer) {
+//    }
 }

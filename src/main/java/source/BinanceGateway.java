@@ -16,7 +16,7 @@ import java.util.TreeMap;
 
 // from https://github.com/joaopsilva/binance-java-api/blob/master/src/test/java/com/binance/api/examples/DepthCacheExample.java
 
-public class MarketDataGateway {
+public class BinanceGateway {
     private static final String BIDS  = "BIDS";
     private static final String ASKS  = "ASKS";
 
@@ -24,7 +24,7 @@ public class MarketDataGateway {
 
     private Map<String, NavigableMap<BigDecimal, BigDecimal>> depthCache;
 
-    public MarketDataGateway(String symbol) {
+    public BinanceGateway(String symbol) {
         initializeDepthCache(symbol);
         startDepthEventStreaming(symbol);
     }
@@ -139,6 +139,6 @@ public class MarketDataGateway {
     }
 
     public static void main(String[] args) {
-        new MarketDataGateway("bnbbtc");
+        new BinanceGateway("bnbbtc");
     }
 }
