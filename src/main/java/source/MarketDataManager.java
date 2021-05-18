@@ -1,24 +1,31 @@
 package source;
 
-public class MarketDataManager implements Runnable {
-    private String symbol;
-    private BinanceGateway gateway;
+import java.util.HashMap;
+import java.util.Map;
 
-    public MarketDataManager(String symbol) {
-        this.symbol = symbol;
-        this.gateway = new BinanceGateway(symbol);
+public class MarketDataManager implements Runnable {
+
+    private Map<String, BinanceGateway> subscriptions;
+
+    public MarketDataManager() {
+        this.subscriptions = new HashMap<>();
     }
 
     void subscribeOrderBook(String symbol) {
-        gateway.startDepthEventStreaming(symbol);
+        if (!subscriptions.containsKey(symbol)) {
+            subscriptions.put(symbol, new BinanceGateway(symbol));
+        }
+        subscriptions.get(symbol).startDepthEventStreaming(symbol);
     }
+
     void subscribeTrades(String symbol) {
-        gateway.startAggTradesEventStreaming(symbol);
+        if (!subscriptions.containsKey(symbol)) {
+            subscriptions.put(symbol, new BinanceGateway(symbol));
+        }
+        subscriptions.get(symbol).startAggTradesEventStreaming(symbol);
     }
 
     @Override
     public void run() {
-        subscribeOrderBook(symbol);
-        subscribeTrades(symbol);
     }
 }
