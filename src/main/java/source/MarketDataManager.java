@@ -11,14 +11,14 @@ public class MarketDataManager implements Runnable {
         this.subscriptions = new HashMap<>();
     }
 
-    void subscribeOrderBook(String symbol) {
+    public void subscribeOrderBook(String symbol) {
         if (!subscriptions.containsKey(symbol)) {
             subscriptions.put(symbol, new BinanceGateway(symbol));
         }
         subscriptions.get(symbol).startDepthEventStreaming(symbol);
     }
 
-    void subscribeTrades(String symbol) {
+    public void subscribeTrades(String symbol) {
         if (!subscriptions.containsKey(symbol)) {
             subscriptions.put(symbol, new BinanceGateway(symbol));
         }

@@ -1,7 +1,10 @@
-import source.BinanceGateway;
+import messaging.EventManager;
+import source.MarketDataManager;
 
 public class Main {
     public static void main(String[] args) {
-        new BinanceGateway("btcbusd");
+        EventManager eventManager = new EventManager();
+        MarketDataManager marketDataManager = new MarketDataManager();
+        marketDataManager.subscribeOrderBook("btcusdt");
     }
 }
