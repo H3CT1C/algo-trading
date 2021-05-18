@@ -3,6 +3,7 @@ package source;
 import com.binance.api.client.BinanceApiRestClient;
 import com.binance.api.client.BinanceApiWebSocketClient;
 import com.binance.api.client.BinanceApiClientFactory;
+import com.binance.api.client.domain.market.AggTrade;
 import com.binance.api.client.domain.market.OrderBook;
 import com.binance.api.client.domain.market.OrderBookEntry;
 import com.binance.api.client.impl.BinanceApiServiceGenerator;
@@ -16,8 +17,9 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
-// from https://github.com/joaopsilva/binance-java-api/blob/master/src/test/java/com/binance/api/examples/DepthCacheExample.java
-
+/**
+ * Gateway for receiving depth stream and agg trade prices.
+ */
 public class BinanceGateway {
     private static final String BIDS  = "BIDS";
     private static final String ASKS  = "ASKS";
@@ -26,9 +28,17 @@ public class BinanceGateway {
 
     private Map<String, NavigableMap<BigDecimal, BigDecimal>> depthCache;
 
+    /**
+     * Key is the aggregate trade id, and the value contains the aggregated trade data, which is
+     * automatically updated whenever a new agg data stream event arrives.
+     */
+    private Map<Long, AggTrade> aggTradesCache;
+
     public BinanceGateway(String symbol) {
         initializeDepthCache(symbol);
         startDepthEventStreaming(symbol);
+        initializeAggTradesCache(symbol);
+        startAggTradesEventStreaming(symbol);
     }
 
     /**
@@ -56,6 +66,20 @@ public class BinanceGateway {
     }
 
     /**
+     * Initializes the aggTrades cache by using the REST API.
+     */
+    private void initializeAggTradesCache(String symbol) {
+        BinanceApiClientFactory factory = BinanceApiClientFactory.newInstance();
+        BinanceApiRestClient client = factory.newRestClient();
+        List<AggTrade> aggTrades = client.getAggTrades(symbol.toUpperCase());
+
+        this.aggTradesCache = new HashMap<>();
+        for (AggTrade aggTrade : aggTrades) {
+            aggTradesCache.put(aggTrade.getAggregatedTradeId(), aggTrade);
+        }
+    }
+
+    /**
      * Begins streaming of depth events.
      */
     private void startDepthEventStreaming(String symbol) {
@@ -68,8 +92,35 @@ public class BinanceGateway {
                 lastUpdateId = response.getFinalUpdateId();
                 updateOrderBook(getAsks(), response.getAsks());
                 updateOrderBook(getBids(), response.getBids());
-                printDepthCache();
+//                printDepthCache();
             }
+        });
+    }
+
+    /**
+     * Begins streaming of agg trades events.
+     */
+    private void startAggTradesEventStreaming(String symbol) {
+        BinanceApiClientFactory factory = BinanceApiClientFactory.newInstance();
+        BinanceApiWebSocketClient client = factory.newWebSocketClient();
+
+        client.onAggTradeEvent(symbol.toLowerCase(), response -> {
+            Long aggregatedTradeId = response.getAggregatedTradeId();
+            AggTrade updateAggTrade = aggTradesCache.get(aggregatedTradeId);
+            if (updateAggTrade == null) {
+                // new agg trade
+                updateAggTrade = new AggTrade();
+            }
+            updateAggTrade.setAggregatedTradeId(aggregatedTradeId);
+            updateAggTrade.setPrice(response.getPrice());
+            updateAggTrade.setQuantity(response.getQuantity());
+            updateAggTrade.setFirstBreakdownTradeId(response.getFirstBreakdownTradeId());
+            updateAggTrade.setLastBreakdownTradeId(response.getLastBreakdownTradeId());
+            updateAggTrade.setBuyerMaker(response.isBuyerMaker());
+
+            // Store the updated agg trade in the cache
+            aggTradesCache.put(aggregatedTradeId, updateAggTrade);
+            System.out.println(updateAggTrade);
         });
     }
 
@@ -121,14 +172,22 @@ public class BinanceGateway {
     }
 
     /**
+     * @return an aggTrades cache, containing the aggregated trade id as the key,
+     * and the agg trade data as the value.
+     */
+    public Map<Long, AggTrade> getAggTradesCache() {
+        return aggTradesCache;
+    }
+
+    /**
      * Prints the cached order book / depth of a symbol as well as the best ask and bid price in the book.
      */
     private void printDepthCache() {
-//        System.out.println(depthCache);
-//        System.out.println("ASKS:");
-//        getAsks().entrySet().forEach(entry -> System.out.println(toDepthCacheEntryString(entry)));
-//        System.out.println("BIDS:");
-//        getBids().entrySet().forEach(entry -> System.out.println(toDepthCacheEntryString(entry)));
+        System.out.println(depthCache);
+        System.out.println("ASKS:");
+        getAsks().entrySet().forEach(entry -> System.out.println(toDepthCacheEntryString(entry)));
+        System.out.println("BIDS:");
+        getBids().entrySet().forEach(entry -> System.out.println(toDepthCacheEntryString(entry)));
         System.out.println("BEST ASK: " + toDepthCacheEntryString(getBestAsk()));
         System.out.println("BEST BID: " + toDepthCacheEntryString(getBestBid()));
     }
