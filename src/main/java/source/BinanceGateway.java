@@ -5,6 +5,8 @@ import com.binance.api.client.BinanceApiWebSocketClient;
 import com.binance.api.client.BinanceApiClientFactory;
 import com.binance.api.client.domain.market.OrderBook;
 import com.binance.api.client.domain.market.OrderBookEntry;
+import com.binance.api.client.impl.BinanceApiServiceGenerator;
+import websocket.BinanceApiWebSocketClientImplFast;
 
 import java.math.BigDecimal;
 import java.util.Comparator;
@@ -57,8 +59,8 @@ public class BinanceGateway {
      * Begins streaming of depth events.
      */
     private void startDepthEventStreaming(String symbol) {
-        BinanceApiClientFactory factory = BinanceApiClientFactory.newInstance();
-        BinanceApiWebSocketClient client = factory.newWebSocketClient();
+        BinanceApiWebSocketClient client = new BinanceApiWebSocketClientImplFast(
+                BinanceApiServiceGenerator.getSharedClient());
 
         client.onDepthEvent(symbol.toLowerCase(), response -> {
             if (response.getFinalUpdateId() > lastUpdateId) {
