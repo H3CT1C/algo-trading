@@ -36,9 +36,9 @@ public class BinanceGateway {
 
     public BinanceGateway(String symbol) {
         initializeDepthCache(symbol);
-        startDepthEventStreaming(symbol);
+//        startDepthEventStreaming(symbol);
         initializeAggTradesCache(symbol);
-        startAggTradesEventStreaming(symbol);
+//        startAggTradesEventStreaming(symbol);
     }
 
     /**
@@ -82,7 +82,7 @@ public class BinanceGateway {
     /**
      * Begins streaming of depth events.
      */
-    private void startDepthEventStreaming(String symbol) {
+    void startDepthEventStreaming(String symbol) {
         BinanceApiWebSocketClient client = new BinanceApiWebSocketClientImplFast(
                 BinanceApiServiceGenerator.getSharedClient());
 
@@ -92,7 +92,7 @@ public class BinanceGateway {
                 lastUpdateId = response.getFinalUpdateId();
                 updateOrderBook(getAsks(), response.getAsks());
                 updateOrderBook(getBids(), response.getBids());
-//                printDepthCache();
+                printDepthCache();
             }
         });
     }
@@ -100,7 +100,7 @@ public class BinanceGateway {
     /**
      * Begins streaming of agg trades events.
      */
-    private void startAggTradesEventStreaming(String symbol) {
+    void startAggTradesEventStreaming(String symbol) {
         BinanceApiClientFactory factory = BinanceApiClientFactory.newInstance();
         BinanceApiWebSocketClient client = factory.newWebSocketClient();
 
@@ -200,6 +200,8 @@ public class BinanceGateway {
     }
 
     public static void main(String[] args) {
-        new BinanceGateway("bnbbtc");
+        BinanceGateway gateway = new BinanceGateway("bnbbtc");
+//        gateway.startDepthEventStreaming("bnbbtc");
+        gateway.startAggTradesEventStreaming("bnbbtc");
     }
 }
