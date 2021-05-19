@@ -15,6 +15,9 @@ public class EventManager {
         this.orderBooks = new ArrayBlockingQueue<OrderBook>(100);
         this.listeners = new ArrayList<EventListener>();
     }
+
+    // pass the events to the listeners
+
     void publish(OrderBook orderBook) {
         orderBooks.add(orderBook);
     }

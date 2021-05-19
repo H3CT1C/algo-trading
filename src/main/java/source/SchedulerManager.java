@@ -1,5 +1,6 @@
 package source;
 
+import messaging.EventManager;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
@@ -12,6 +13,7 @@ import org.quartz.impl.StdSchedulerFactory;
 public class SchedulerManager implements Runnable {
 
     private Scheduler scheduler;
+    private EventManager eventManager;
 
     public SchedulerManager() throws SchedulerException {
         this.scheduler = StdSchedulerFactory.getDefaultScheduler();
