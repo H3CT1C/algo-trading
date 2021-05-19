@@ -1,6 +1,6 @@
 package messaging;
 
-import com.binance.api.client.domain.market.OrderBook;
+import source.LocalOrderBook;
 import source.ScheduleEvent;
 
 import java.util.ArrayList;
@@ -9,16 +9,16 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 public class EventManager {
-    private BlockingQueue<OrderBook> orderBooks;
+    private BlockingQueue<LocalOrderBook> orderBooks;
     private List<EventListener> listeners;
     public EventManager() {
-        this.orderBooks = new ArrayBlockingQueue<OrderBook>(100);
+        this.orderBooks = new ArrayBlockingQueue<LocalOrderBook>(100);
         this.listeners = new ArrayList<EventListener>();
     }
 
     // pass the events to the listeners
 
-    void publish(OrderBook orderBook) {
+    void publish(LocalOrderBook orderBook) {
         orderBooks.add(orderBook);
     }
 

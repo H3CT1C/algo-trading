@@ -26,7 +26,7 @@ public class BinanceGateway {
 
     private long lastUpdateId;
 
-    private Map<String, NavigableMap<BigDecimal, BigDecimal>> depthCache;
+    private LocalOrderBook depthCache;
 
     /**
      * Key is the aggregate trade id, and the value contains the aggregated trade data, which is
@@ -49,7 +49,7 @@ public class BinanceGateway {
         BinanceApiRestClient client = factory.newRestClient();
         OrderBook orderBook = client.getOrderBook(symbol.toUpperCase(), 10);
 
-        this.depthCache = new HashMap<>();
+        this.depthCache = new LocalOrderBook();
         this.lastUpdateId = orderBook.getLastUpdateId();
 
         NavigableMap<BigDecimal, BigDecimal> asks = new TreeMap<>(Comparator.reverseOrder());
@@ -129,7 +129,8 @@ public class BinanceGateway {
      *
      * Whenever the qty specified is ZERO, it means the price should was removed from the order book.
      */
-    private void updateOrderBook(NavigableMap<BigDecimal, BigDecimal> lastOrderBookEntries, List<OrderBookEntry> orderBookDeltas) {
+    private void updateOrderBook(NavigableMap<BigDecimal, BigDecimal> lastOrderBookEntries,
+                                 List<OrderBookEntry> orderBookDeltas) {
         for (OrderBookEntry orderBookDelta : orderBookDeltas) {
             BigDecimal price = new BigDecimal(orderBookDelta.getPrice());
             BigDecimal qty = new BigDecimal(orderBookDelta.getQty());
@@ -143,11 +144,11 @@ public class BinanceGateway {
     }
 
     public NavigableMap<BigDecimal, BigDecimal> getAsks() {
-        return depthCache.get(ASKS);
+        return depthCache.getAsks();
     }
 
     public NavigableMap<BigDecimal, BigDecimal> getBids() {
-        return depthCache.get(BIDS);
+        return depthCache.getBids();
     }
 
     /**
@@ -167,7 +168,7 @@ public class BinanceGateway {
     /**
      * @return a depth cache, containing two keys (ASKs and BIDs), and for each, an ordered list of book entries.
      */
-    public Map<String, NavigableMap<BigDecimal, BigDecimal>> getDepthCache() {
+    public LocalOrderBook getDepthCache() {
         return depthCache;
     }
 

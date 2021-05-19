@@ -1,12 +1,12 @@
 package algo;
 
-import com.binance.api.client.domain.market.OrderBook;
 import messaging.EventListener;
+import source.LocalOrderBook;
 import source.ScheduleEvent;
 
 public class RiskWatcher implements EventListener {
     @Override
-    public void handleEvent(OrderBook orderBook) {
+    public void handleEvent(LocalOrderBook orderBook) {
     }
 
     @Override
