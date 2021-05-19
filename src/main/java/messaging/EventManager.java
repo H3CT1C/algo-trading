@@ -1,40 +1,47 @@
 package messaging;
 
+import com.binance.api.client.domain.event.AggTradeEvent;
 import source.LocalOrderBook;
 import source.ScheduleEvent;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-
 public class EventManager {
-    private BlockingQueue<LocalOrderBook> orderBooks;
-    private List<EventListener> listeners;
-    public EventManager() {
-        this.orderBooks = new ArrayBlockingQueue<LocalOrderBook>(100);
-        this.listeners = new ArrayList<EventListener>();
+    private EventBroker<LocalOrderBook> orderBookBroker = new EventBroker<>();
+    private EventBroker<AggTradeEvent> aggTradeBroker = new EventBroker<>();
+    private EventBroker<ScheduleEvent> scheduleEventBroker = new EventBroker<>();
+
+    void publish(LocalOrderBook orderBook) throws InterruptedException {
+        orderBookBroker.addEvent(orderBook);
     }
 
-    // pass the events to the listeners
-
-    void publish(LocalOrderBook orderBook) {
-        orderBooks.add(orderBook);
+    public void publish(AggTradeEvent aggTradeEvent) throws InterruptedException {
+        aggTradeBroker.addEvent(aggTradeEvent);
     }
 
-    void publish(ScheduleEvent timer) {
-
+    void publish(ScheduleEvent timer) throws InterruptedException {
+        scheduleEventBroker.addEvent(timer);
     }
 
     void addListener(EventListener listener) {
-        if (!listeners.contains(listener)) {
-            listeners.add(listener);
-        }
+        orderBookBroker.addListener(listener);
+        aggTradeBroker.addListener(listener);
+        scheduleEventBroker.addListener(listener);
     }
 
     void removeListener(EventListener listener) {
-        if (listeners.contains(listener)) {
-            listeners.remove(listener);
-        }
+        orderBookBroker.removeListener(listener);
+        aggTradeBroker.removeListener(listener);
+        scheduleEventBroker.removeListener(listener);
+    }
+
+    public EventBroker<LocalOrderBook> getOrderBookBroker() {
+        return orderBookBroker;
+    }
+
+    public EventBroker<AggTradeEvent> getAggTradeBroker() {
+        return aggTradeBroker;
+    }
+
+    public EventBroker<ScheduleEvent> getScheduleEventBroker() {
+        return scheduleEventBroker;
     }
 }

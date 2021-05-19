@@ -1,6 +1,7 @@
 package messaging;
 
 import source.LocalOrderBook;
+import source.ScheduleEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,8 @@ public class EventBroker<T> {
         for (EventListener listener : listenerList) {
             if (event instanceof LocalOrderBook) {
                 listener.handleEvent((LocalOrderBook) event);
+            } else if (event instanceof ScheduleEvent) {
+                listener.handleEvent((ScheduleEvent) event);
             }
         }
     }
