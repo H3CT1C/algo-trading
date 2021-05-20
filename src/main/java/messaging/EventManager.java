@@ -9,7 +9,7 @@ public class EventManager {
     private EventBroker<AggTradeEvent> aggTradeBroker = new EventBroker<>();
     private EventBroker<ScheduleEvent> scheduleEventBroker = new EventBroker<>();
 
-    void publish(LocalOrderBook orderBook) throws InterruptedException {
+    public void publish(LocalOrderBook orderBook) throws InterruptedException {
         orderBookBroker.addEvent(orderBook);
     }
 
@@ -17,7 +17,7 @@ public class EventManager {
         aggTradeBroker.addEvent(aggTradeEvent);
     }
 
-    void publish(ScheduleEvent timer) throws InterruptedException {
+    public void publish(ScheduleEvent timer) throws InterruptedException {
         scheduleEventBroker.addEvent(timer);
     }
 

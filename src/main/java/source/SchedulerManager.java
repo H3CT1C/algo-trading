@@ -10,7 +10,7 @@ import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 
-public class SchedulerManager implements Runnable {
+public class SchedulerManager {
 
     private Scheduler scheduler;
     private EventManager eventManager;
@@ -18,18 +18,18 @@ public class SchedulerManager implements Runnable {
     public SchedulerManager() throws SchedulerException {
         this.scheduler = StdSchedulerFactory.getDefaultScheduler();
     }
-    public void periodicCallBack(int intervalMillis, ScheduleEvent event) throws SchedulerException {
+
+    public void periodicCallBack(int intervalMillis, String tag) throws SchedulerException {
         Trigger trigger = TriggerBuilder.newTrigger()
                 .startNow()
                 .withSchedule(SimpleScheduleBuilder.simpleSchedule()
                         .withIntervalInMilliseconds(intervalMillis)
                         .repeatForever())
                 .build();
-        JobDetail jobDetail = JobBuilder.newJob(event.getClass()).build();
-        scheduler.scheduleJob(jobDetail, trigger);
-    }
-
-    @Override
-    public void run() {
+        JobDetail timer = JobBuilder.newJob(Timer.class).build();
+        timer.getJobDataMap().put("em", eventManager);
+        timer.getJobDataMap().put("tag", tag);
+        scheduler.scheduleJob(timer, trigger);
+        scheduler.start();
     }
 }
