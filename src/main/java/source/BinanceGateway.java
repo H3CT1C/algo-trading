@@ -7,6 +7,7 @@ import com.binance.api.client.domain.market.AggTrade;
 import com.binance.api.client.domain.market.OrderBook;
 import com.binance.api.client.domain.market.OrderBookEntry;
 import com.binance.api.client.impl.BinanceApiServiceGenerator;
+import messaging.EventManager;
 import websocket.BinanceApiWebSocketClientImplFast;
 
 import java.math.BigDecimal;
@@ -36,9 +37,7 @@ public class BinanceGateway {
 
     public BinanceGateway(String symbol) {
         initializeDepthCache(symbol);
-//        startDepthEventStreaming(symbol);
         initializeAggTradesCache(symbol);
-//        startAggTradesEventStreaming(symbol);
     }
 
     /**
@@ -82,7 +81,7 @@ public class BinanceGateway {
     /**
      * Begins streaming of depth events.
      */
-    void startDepthEventStreaming(String symbol) {
+    void startDepthEventStreaming(String symbol, EventManager eventManager) {
         BinanceApiWebSocketClient client = new BinanceApiWebSocketClientImplFast(
                 BinanceApiServiceGenerator.getSharedClient());
 
@@ -93,6 +92,12 @@ public class BinanceGateway {
                 updateOrderBook(getAsks(), response.getAsks());
                 updateOrderBook(getBids(), response.getBids());
                 printDepthCache();
+
+                try {
+                    eventManager.publish(depthCache);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
     }
@@ -100,7 +105,7 @@ public class BinanceGateway {
     /**
      * Begins streaming of agg trades events.
      */
-    void startAggTradesEventStreaming(String symbol) {
+    void startAggTradesEventStreaming(String symbol, EventManager eventManager) {
         BinanceApiClientFactory factory = BinanceApiClientFactory.newInstance();
         BinanceApiWebSocketClient client = factory.newWebSocketClient();
 
@@ -121,6 +126,12 @@ public class BinanceGateway {
             // Store the updated agg trade in the cache
             aggTradesCache.put(aggregatedTradeId, updateAggTrade);
             System.out.println(updateAggTrade);
+
+            try {
+                eventManager.publish(response);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
         });
     }
 
@@ -198,11 +209,5 @@ public class BinanceGateway {
      */
     private static String toDepthCacheEntryString(Map.Entry<BigDecimal, BigDecimal> depthCacheEntry) {
         return depthCacheEntry.getKey().toPlainString() + " / " + depthCacheEntry.getValue();
-    }
-
-    public static void main(String[] args) {
-        BinanceGateway gateway = new BinanceGateway("bnbbtc");
-//        gateway.startDepthEventStreaming("bnbbtc");
-        gateway.startAggTradesEventStreaming("bnbbtc");
     }
 }
