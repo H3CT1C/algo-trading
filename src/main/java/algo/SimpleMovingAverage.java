@@ -1,7 +1,7 @@
 package algo;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
-import source.LocalOrderBook;
+import source.data.LocalOrderBook;
 
 public class SimpleMovingAverage {
     private int period;

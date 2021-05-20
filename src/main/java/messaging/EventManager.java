@@ -1,8 +1,8 @@
 package messaging;
 
 import com.binance.api.client.domain.event.AggTradeEvent;
-import source.LocalOrderBook;
-import source.ScheduleEvent;
+import source.data.LocalOrderBook;
+import source.scheduling.ScheduleEvent;
 
 public class EventManager {
     private EventBroker<LocalOrderBook> orderBookBroker = new EventBroker<>();

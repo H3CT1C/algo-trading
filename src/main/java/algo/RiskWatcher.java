@@ -1,8 +1,8 @@
 package algo;
 
 import messaging.EventListener;
-import source.LocalOrderBook;
-import source.ScheduleEvent;
+import source.data.LocalOrderBook;
+import source.scheduling.ScheduleEvent;
 
 public class RiskWatcher implements EventListener {
     @Override

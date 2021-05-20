@@ -1,6 +1,6 @@
 package algo;
 
-import source.LocalOrderBook;
+import source.data.LocalOrderBook;
 
 import java.math.BigDecimal;
 import java.util.Map;

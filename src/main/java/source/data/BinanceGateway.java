@@ -1,4 +1,4 @@
-package source;
+package source.data;
 
 import com.binance.api.client.BinanceApiRestClient;
 import com.binance.api.client.BinanceApiWebSocketClient;

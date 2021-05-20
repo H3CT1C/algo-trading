@@ -1,4 +1,4 @@
-package source;
+package source.scheduling;
 
 import messaging.EventManager;
 import org.quartz.JobBuilder;

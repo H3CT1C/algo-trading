@@ -1,7 +1,7 @@
 package messaging;
 
-import source.LocalOrderBook;
-import source.ScheduleEvent;
+import source.data.LocalOrderBook;
+import source.scheduling.ScheduleEvent;
 
 import java.util.ArrayList;
 import java.util.List;

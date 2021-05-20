@@ -1,4 +1,4 @@
-package source;
+package source.data;
 
 import messaging.EventManager;
 

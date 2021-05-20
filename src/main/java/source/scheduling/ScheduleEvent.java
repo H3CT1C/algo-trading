@@ -1,4 +1,4 @@
-package source;
+package source.scheduling;
 
 public class ScheduleEvent {
     private String tag;

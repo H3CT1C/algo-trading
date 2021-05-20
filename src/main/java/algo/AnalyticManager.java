@@ -2,9 +2,9 @@ package algo;
 
 import messaging.EventListener;
 import messaging.EventManager;
-import source.LocalOrderBook;
-import source.ScheduleEvent;
-import source.SchedulerManager;
+import source.data.LocalOrderBook;
+import source.scheduling.ScheduleEvent;
+import source.scheduling.SchedulerManager;
 
 import java.util.NavigableMap;
 import java.util.TreeMap;
