@@ -18,7 +18,7 @@ public class SchedulerManager implements Runnable {
     public SchedulerManager() throws SchedulerException {
         this.scheduler = StdSchedulerFactory.getDefaultScheduler();
     }
-    void periodicCallBack(int intervalMillis, ScheduleEvent event) throws SchedulerException {
+    public void periodicCallBack(int intervalMillis, ScheduleEvent event) throws SchedulerException {
         Trigger trigger = TriggerBuilder.newTrigger()
                 .startNow()
                 .withSchedule(SimpleScheduleBuilder.simpleSchedule()

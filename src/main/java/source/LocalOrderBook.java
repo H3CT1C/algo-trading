@@ -27,15 +27,31 @@ public class LocalOrderBook {
     /**
      * @return the best ask in the order book
      */
-    private Map.Entry<BigDecimal, BigDecimal> getBestAsk() {
+    public Map.Entry<BigDecimal, BigDecimal> getBestAsk() {
         return getAsks().lastEntry();
+    }
+
+    public Map.Entry<BigDecimal, BigDecimal> getSecondBestAsk() {
+        return getAsks().lowerEntry(getBestAsk().getKey());
+    }
+
+    public Map.Entry<BigDecimal, BigDecimal> getThirdBestAsk() {
+        return getAsks().lowerEntry(getSecondBestAsk().getKey());
     }
 
     /**
      * @return the best bid in the order book
      */
-    private Map.Entry<BigDecimal, BigDecimal> getBestBid() {
+    public Map.Entry<BigDecimal, BigDecimal> getBestBid() {
         return getBids().firstEntry();
+    }
+
+    public Map.Entry<BigDecimal, BigDecimal> getSecondBestBid() {
+        return getAsks().higherEntry(getBestBid().getKey());
+    }
+
+    public Map.Entry<BigDecimal, BigDecimal> getThirdBestBid() {
+        return getAsks().higherEntry(getSecondBestBid().getKey());
     }
 
     /**
