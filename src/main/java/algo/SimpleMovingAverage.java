@@ -1,7 +1,6 @@
 package algo;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
-import source.data.LocalOrderBook;
 
 public class SimpleMovingAverage {
     private int period;
@@ -12,8 +11,8 @@ public class SimpleMovingAverage {
         this.descriptiveStatistics = new DescriptiveStatistics(period);
     }
 
-    public void addValue(LocalOrderBook orderBook) {
-        descriptiveStatistics.addValue(Math.weightedAverage(orderBook));
+    public void addValue(double value) {
+        descriptiveStatistics.addValue(value);
     }
 
     public double getMovingAverage() {
