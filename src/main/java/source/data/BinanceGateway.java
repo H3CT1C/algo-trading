@@ -91,7 +91,7 @@ public class BinanceGateway {
                 lastUpdateId = response.getFinalUpdateId();
                 updateOrderBook(getAsks(), response.getAsks());
                 updateOrderBook(getBids(), response.getBids());
-                printDepthCache();
+//                printDepthCache();
 
                 try {
                     eventManager.publish(depthCache);
@@ -125,7 +125,7 @@ public class BinanceGateway {
 
             // Store the updated agg trade in the cache
             aggTradesCache.put(aggregatedTradeId, updateAggTrade);
-            System.out.println(updateAggTrade);
+//            System.out.println(updateAggTrade);
 
             try {
                 eventManager.publish(response);

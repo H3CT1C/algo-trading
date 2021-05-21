@@ -52,4 +52,8 @@ public class EventBroker<T> {
             System.out.println("Listener does not exist in list");
         }
     }
+
+    public T get() throws InterruptedException {
+        return eventQueue.take();
+    }
 }

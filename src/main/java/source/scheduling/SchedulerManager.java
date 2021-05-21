@@ -15,8 +15,9 @@ public class SchedulerManager {
     private Scheduler scheduler;
     private EventManager eventManager;
 
-    public SchedulerManager() throws SchedulerException {
+    public SchedulerManager(EventManager eventManager) throws SchedulerException {
         this.scheduler = StdSchedulerFactory.getDefaultScheduler();
+        this.eventManager = eventManager;
     }
 
     public void periodicCallBack(int intervalMillis, String tag) throws SchedulerException {
