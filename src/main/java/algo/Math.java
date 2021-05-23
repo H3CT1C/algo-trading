@@ -7,9 +7,11 @@ import java.util.Map;
 
 public class Math {
     public static double weightedAverage(LocalOrderBook orderBook) {
+        //pass in the arrays instead of the local orderbook
         double[] weightedAsk = weightedAsk(orderBook);
         double[] weightedBid = weightedBid(orderBook);
         double totalQuantity = weightedAsk[1] + weightedBid[1];
+        // need to be more defensive in case length is < 2
         double totalPrice = weightedAsk[0] * weightedAsk[1]
                 + weightedBid[0] * weightedBid[1];
         return totalPrice / totalQuantity;
